@@ -1,0 +1,19 @@
+{
+	"name":"gifster",
+	"version":"0.1",
+	"manifest_version":2,
+	"description":"gifster app",
+	"browser_action": {
+		"default_icon":"icon_128.png",
+		"default_title":"Bookmark and use your favourite gifs",
+		"default_popup":"extension.html"
+	},
+	"permissions": ["contextMenus"],
+	"background": {
+    	"scripts": ["sample.js"]
+    },
+	"icons":{
+		"16":"icon_16.png",
+		"128":"icon_128.png"
+	}
+}
