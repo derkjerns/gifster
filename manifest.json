@@ -4,16 +4,16 @@
 	"manifest_version":2,
 	"description":"gifster app",
 	"browser_action": {
-		"default_icon":"icon_128.png",
+		"default_icon":"images/icon_128.png",
 		"default_title":"Bookmark and use your favourite gifs",
 		"default_popup":"extension.html"
 	},
-	"permissions": ["contextMenus"],
+	"permissions": ["contextMenus", "bookmarks"],
 	"background": {
-    	"scripts": ["sample.js"]
+    	"scripts": ["scripts/core.js"]
     },
 	"icons":{
-		"16":"icon_16.png",
-		"128":"icon_128.png"
+		"16":"images/icon_16.png",
+		"128":"images/icon_128.png"
 	}
 }
