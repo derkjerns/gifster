@@ -8,10 +8,11 @@
 		"default_title":"Bookmark and use your favourite gifs",
 		"default_popup":"extension.html"
 	},
-	"permissions": ["contextMenus", "bookmarks"],
 	"background": {
-    	"scripts": ["scripts/core.js"]
-    },
+    	"scripts": ["scripts/core.js"],
+    	"persistent": false
+  	},
+	"permissions": ["contextMenus", "bookmarks"],
 	"icons":{
 		"16":"images/icon_16.png",
 		"128":"images/icon_128.png"

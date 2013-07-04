@@ -2,6 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+$(document).ready(function(){
+	init();
+});
+
+function init()
+{
+	$("#getThem").click(function(){
+        console.log("test");
+        //more code here...
+    });
+}
+
 // The onClicked callback function.
 function onClickHandler(info, tab) {
 	if ( info.menuItemId == "bookmark" )
@@ -21,3 +33,10 @@ chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({"title": "Bookmark image", "contexts":["image"], "id": "bookmark"});
     chrome.contextMenus.create({"title": "Insert image", "contexts":["editable"], "id": "insert"});
 });
+
+function getAll()
+{
+	console.log("gotem'");
+}
+
+
