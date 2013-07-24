@@ -20,6 +20,7 @@ function contextClickHandler(info, tab)
 	}
 	else if ( info.menuItemId == "insert" )
 	{
+
 		insertImage();
 	}
 };
@@ -58,17 +59,33 @@ function makeSafe( str )
 ***************************/
 function insertImage()
 {
-	//runs javascript code to clear the body contents ... just for kicks atm.
+	//THIS INSERTS TEXT INTO THE ACTIVE ELEMENT (IE TEXTFIELD)
+	var text = "HELLO!";
+	
 	chrome.tabs.executeScript(null, 
-		{code:"document.body.innerHTML = '';"});
+			{code:
+				"var text, field;" +
+				"field = document.activeElement;"+
+				"text = \""+text+"!\";" +
+				"field.value = field.value + text;"
+			});
+    
+
+	// IDEA: in the inner html, insert a div that will have absolute positioning. 
+	// It will not be visible at first, but will become visible when insert image action
+	
+
+	//runs javascript code to clear the body contents ... just for kicks atm.
+	//chrome.tabs.executeScript(null, 
+		//{code:"document.body.innerHTML = '';"});
 
 	//iterate through each local storage item
 	for (var key in localStorage)
 	{
-		var name = localStorage.getItem(key);
+		/*var name = localStorage.getItem(key);
 		var temp = "<h2>"+name+"</h2><img src=\""+key+"\" alt=\""+name+"\"/><br/>";
 		chrome.tabs.executeScript(null, 
-			{code:"document.body.innerHTML += '"+temp+"';"});
+			{code:"document.body.innerHTML += '"+temp+"';"});*/
 	}
 }
 
