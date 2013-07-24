@@ -20,6 +20,9 @@ function contextClickHandler(info, tab) {
 		//add a name for the bookmark
 		var name = prompt("Enter a name for your bookmark:");
 		
+		//make the name safe to use
+		name = makeSafe(name);
+
 		//store key : value pair. ?? Maybe change this
 		localStorage[url] = name;
 	}
@@ -39,5 +42,11 @@ function contextClickHandler(info, tab) {
 				{code:"document.body.innerHTML += '"+temp+"';"});
 		}
 	}
+};
+
+function makeSafe( str ) {
+	str = str.trim();
+	str = str.replace('&', "&amp;").replace('"', "&quot;").replace("'", "&#39;").replace('>', "&gt;").replace('<', "&lt;");
+    return str;
 };
 
