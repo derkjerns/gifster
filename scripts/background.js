@@ -11,42 +11,64 @@ chrome.runtime.onInstalled.addListener(function() {
 //listen for context menu clicks
 chrome.contextMenus.onClicked.addListener(contextClickHandler);
 
-function contextClickHandler(info, tab) {
-	//bookmark action
+function contextClickHandler(info, tab) 
+{
 	if ( info.menuItemId == "bookmark" )
 	{
-		//image source url ... convenient :[
-		var url = info.srcUrl;
-		//add a name for the bookmark
-		var name = prompt("Enter a name for your bookmark:");
-		
-		//make the name safe to use
-		name = makeSafe(name);
-
-		//store key : value pair. ?? Maybe change this
-		localStorage[url] = name;
+		// info.srcUrl is the image source url ... convenient :[
+		addBookmark(info.srcUrl);
 	}
-	//insert action
 	else if ( info.menuItemId == "insert" )
 	{
-		//runs javascript code to clear the body contents ... just for kicks atm.
-		chrome.tabs.executeScript(null, 
-			{code:"document.body.innerHTML = '';"});
-
-		//iterate through each local storage item
-		for (var key in localStorage)
-		{
-			var name = localStorage.getItem(key);
-			var temp = "<h2>"+name+"</h2><img src=\""+key+"\" alt=\""+name+"\"/><br/>";
-			chrome.tabs.executeScript(null, 
-				{code:"document.body.innerHTML += '"+temp+"';"});
-		}
+		insertImage();
 	}
 };
 
-function makeSafe( str ) {
+
+/**************************
+
+	ADD BOOKMARK ACTION
+
+***************************/
+function addBookmark( url )
+{
+	//add a name for the bookmark
+	var name = prompt("Enter a name for your bookmark:");
+	
+	//replace all shit-disturbing characters with nice ones.
+	name = makeSafe(name);
+
+	//store key : value pair. ?? Maybe change this
+	localStorage[url] = name;
+};
+
+//makes a string safe to insert into html.
+function makeSafe( str ) 
+{
 	str = str.trim();
 	str = str.replace('&', "&amp;").replace('"', "&quot;").replace("'", "&#39;").replace('>', "&gt;").replace('<', "&lt;");
     return str;
 };
+
+
+/**************************
+
+	INSERT IMAGE ACTION
+
+***************************/
+function insertImage()
+{
+	//runs javascript code to clear the body contents ... just for kicks atm.
+	chrome.tabs.executeScript(null, 
+		{code:"document.body.innerHTML = '';"});
+
+	//iterate through each local storage item
+	for (var key in localStorage)
+	{
+		var name = localStorage.getItem(key);
+		var temp = "<h2>"+name+"</h2><img src=\""+key+"\" alt=\""+name+"\"/><br/>";
+		chrome.tabs.executeScript(null, 
+			{code:"document.body.innerHTML += '"+temp+"';"});
+	}
+}
 
