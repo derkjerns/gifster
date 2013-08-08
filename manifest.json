@@ -10,6 +10,13 @@
 			],
 		"persistent": false
 	},
+	"content_scripts": [
+      {
+        "matches": ["https://*/*", "http://*/*"],
+        "js": ["scripts/content.js"],
+        "run_at": "document_end"
+      }
+    ],
 	"permissions":[
 		"contextMenus", 
 		"tabs",
