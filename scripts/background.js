@@ -62,7 +62,7 @@ function makeSafe( str )
 function insertImage( tab )
 {
 	//THIS INSERTS TEXT INTO THE ACTIVE ELEMENT (IE TEXTFIELD)
-	var text = "HELLO!";
+	var text = "***";
 	var insertText = "var text, field;" +
 					 "field = document.activeElement;"+
 				     "text = \""+text+"!\";" +

@@ -8,16 +8,16 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 function showLibraryUI()
 {
 	//check if the div has been inserted into the page already.
-	var div =  document.getElementById( 'gifsterDiv' );
-	if ( div === null )
+	var container =  document.getElementById( 'gifsterContainer' );
+	if ( container === null )
 	{
 		//The UI div has not been inserted. Insert it now
 		insertLibraryUI();
 	}
-	else if( div.style.display != 'block' )
+	else if( container.style.display != 'block' )
 	{
 		//Display the UI div.
-		div.style.display = 'block';
+		container.style.display = 'block';
 	}
 }
 
@@ -25,12 +25,12 @@ function hideLibraryUI()
 {
 	//This function can only be called through user interaction with the UI div;
 	//The UI div has been closed, so let's hide it.
-	var div =  document.getElementById( 'gifsterDiv' );
+	var container =  document.getElementById( 'gifsterContainer' );
 
-	if( div.style.display != 'none' )
+	if( container.style.display != 'none' )
 	{
 		//Hide the UI div.
-		div.style.display = 'none';
+		container.style.display = 'none';
 	}
 }
 
@@ -46,6 +46,19 @@ function insertLibraryUI()
 	var style = document.createElement( 'style' );
 	style.type = 'text/css';
 	style.innerHTML = 
+	'#gifsterContainer{' +
+	'position: fixed;' +
+	'top: 0px;' +
+	'right: 0px;' +
+	'left: 0px;' +
+	'margin-right: auto;' +
+	'margin-left: auto;' +
+	'height: 100%;' +
+	'width: 100%;' +
+	'display: block;' +
+	'z-index: 9999;' +
+	'background-color: rgba( 97, 97, 97, 0.5 );' +
+	'}' +
 	'#gifsterDiv{' +
 	'position: fixed;' +
 	'top: 10%;' +
@@ -56,33 +69,37 @@ function insertLibraryUI()
 	'min-height: 10em;' +
 	'width: 90%;' +
 	'display: block;' +
-	'background-color: red;' +
-	'}';
+	'background-color: rgb( 215, 215, 215 );' +
+	'}' +
+	'.gifsterButton{' +
+	'width: 20px;' +
+	'height: 20px;' +
+	'position: absolute;' +
+	'top: 5px;' +
+	'right: 5px;' +
+	'background-color: black;' +
+	'cursor: pointer;' +
+	'}' ;
+
 	document.head.appendChild( style );
 
 	//Create the UI elements
+	var container = document.createElement( 'gifsterContainer' );
 	var div = document.createElement( 'gifsterDiv' );
-	var btnForm = document.createElement( 'form' );
-	var btn = document.createElement( 'input' );
+	var closeButton = document.createElement( 'gifsterButton' );
 
 	//Append all elements
-	document.body.appendChild( div );
-	div.appendChild( btnForm );
-	btnForm.appendChild( btn );
+	document.body.appendChild( container );
+	container.appendChild( div );
+	div.appendChild( closeButton );
+
+	//Set style for container
+	container.id = 'gifsterContainer';
 
 	//Set style for div
 	div.id = 'gifsterDiv';
 
-	//TODO: FIX Port: Could not establish connection. Receiving end does not exist. 
-
-	//Set attributes for btnForm
-	btnForm.action = '';
-
 	//Set attributes for btn
-	btn.type = 'button';
-	btn.value = 'X';
-	btn.style.position = 'absolute';
-	btn.style.top = '3px';
-	btn.style.right = '3px';
-	btn.onclick = function(){ hideLibraryUI(); };
+	closeButton.className = 'gifsterButton'
+	closeButton.onclick = function(){ hideLibraryUI(); };
 }
