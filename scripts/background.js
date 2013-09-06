@@ -61,25 +61,25 @@ function makeSafe( str )
 ***************************/
 function insertImage( tab )
 {
-	//THIS INSERTS TEXT INTO THE ACTIVE ELEMENT (IE TEXTFIELD)
-	var text = "***";
-	var insertText = "var text, field;" +
-					 "field = document.activeElement;"+
-				     "text = \""+text+"!\";" +
-				     "field.value = field.value + text;";
-	
-	chrome.tabs.executeScript( null, { code: insertText } );
+	var library = [];
 
-    	
-    chrome.tabs.sendMessage( tab.id, { action: "showLibraryUI" }, function( response ){} );
-
-	//iterate through each local storage item
+	//Add each localstorage item into an array
 	for (var key in localStorage)
 	{
-		/*var name = localStorage.getItem(key);
-		var temp = "<h2>"+name+"</h2><img src=\""+key+"\" alt=\""+name+"\"/><br/>";
-		chrome.tabs.executeScript(null, 
-			{code:"document.body.innerHTML += '"+temp+"';"});*/
+		library.push( [ key, localStorage[ key ] ] );
 	}
+
+	//sort the library alphabetically by name
+	library.sort( function( a, b )
+	{
+		a = a[1];
+		b = b[1];
+
+		//return -1 if a is < b, 1 if a > b, and 0 if they are equal.
+		return a < b ? -1 : ( a > b ? 1 : 0 );
+	});
+
+	//send the library to the content.js
+    chrome.tabs.sendMessage( tab.id, { action: "gifsterShowLibraryUI", library: library }, function( response ){} );
 }
 

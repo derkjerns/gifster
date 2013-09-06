@@ -12,7 +12,7 @@
 	},
 	"content_scripts": [
       {
-        "matches": ["https://*/*", "http://*/*"],
+        "matches": ["https://*/*", "http://*/*", "file://*/*"],
         "js": ["scripts/content.js"],
         "run_at": "document_end"
       }
@@ -26,5 +26,9 @@
 	"icons":{
 		"16":"images/icon_16.png",
 		"128":"images/icon_128.png"
-	}
+	},
+	"web_accessible_resources": [
+    	"images/icon_128.png",
+    	"images/close_button.png"
+    ]
 }
