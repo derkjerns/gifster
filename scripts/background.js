@@ -19,7 +19,7 @@ function contextClickHandler( info, tab )
 	if ( info.menuItemId == "bookmark" )
 	{
 		// info.srcUrl is the image source url ... convenient :[
-		addBookmark( info.srcUrl );
+		addBookmark( info.srcUrl, tab );
 	}
 	else if ( info.menuItemId == "insert" )
 	{
@@ -33,7 +33,7 @@ function contextClickHandler( info, tab )
 	ADD BOOKMARK ACTION
 
 ***************************/
-function addBookmark( url )
+function addBookmark( url, tab )
 {
 	//add a name for the bookmark
 	var name = prompt( "Enter a name for your bookmark:" );
@@ -43,6 +43,10 @@ function addBookmark( url )
 
 	//store key : value pair. ?? Maybe change this
 	localStorage[ url ] = name;
+
+	//send the newly added 
+	newImage = [ url, name ];
+	chrome.tabs.sendMessage( tab.id, { action: "gifsterAddNewToLibrary", newImage: newImage }, function( response ){} );
 };
 
 //makes a string safe to insert into html.

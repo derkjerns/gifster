@@ -3,27 +3,47 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		if ( request.action == 'gifsterShowLibraryUI' ){
 			gifsterShowLibraryUI( request.library );
 		}
+		else if ( request.action == 'gifsterAddNewToLibrary' )
+		{
+			//Only add a new image if the library has already been initialized.
+			if ( gifsterListInit() )
+			{
+				gifsterAddImageToLibrary( request.newImage );
+			}
+		}
 	});
-
 
 function gifsterShowLibraryUI( library )
 {
-	//check if the div has been inserted into the page already.
 	var container =  document.getElementById( 'gifsterContainer' );
-	if ( container === null )
+
+	if ( !gifsterListInit() )
 	{
 		//The UI div has not been inserted. Insert it now
 		gifsterInsertLibraryUI( library );
+		//Insert the user's gif library to the UI.
+		gifsterInsertLibrary( library );
 	}
 	else if( container.style.display != 'block' )
 	{
 		//Display the UI div.
 		container.style.display = 'block';
 	}
-	
-	//Insert the user's gif library to the UI.
-	gifsterInsertLibrary( library );
+}
 
+function gifsterListInit()
+{
+	//check if the div has been inserted into the page already.
+	var container =  document.getElementById( 'gifsterContainer' );
+
+	if ( container === null )
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 function gifsterHideLibraryUI()
@@ -35,6 +55,7 @@ function gifsterHideLibraryUI()
 	if( container.style.display != 'none' )
 	{
 		//Hide the UI div.
+		$( "#gifsterList" ).scrollTop( 0 );
 		container.style.display = 'none';
 	}
 }
@@ -112,6 +133,8 @@ function gifsterInsertLibraryUI()
 	'.gifsterListItem{' +
 	'font: 15px;' +
 	'color: black;' +
+	'width: 220px;' +
+	'height: 220px;' +
 	'display: inline-block;' +
 	'padding: 10px;' +
 	'cursor: pointer;' +
@@ -158,7 +181,7 @@ function gifsterInsertLibraryUI()
 }
 
 /**
-**	GLOBAL VARIABLE FOR KEEPING TRACK OF WHICH FIELD TO INSERT URL INTO
+**	activeField - GLOBAL VARIABLE FOR KEEPING TRACK OF WHICH FIELD TO INSERT URL INTO
 **/
 var activeField;
 
@@ -166,26 +189,49 @@ function gifsterInsertLibrary( library )
 {
 	//Set the global variable to the currently selected input field.
 	activeField = document.activeElement;
-
-	var list = document.getElementById( 'gifsterList' );
 	
 	for (var i = 0; i < library.length; i++)
 	{
-		var tempListItem = 	document.createElement( 'gifsterListItem' );
-		tempListItem.className = 'gifsterListItem';
-		//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
-		tempListItem.setAttribute( 'gifsterInsertText', library[ i ][ 0 ] );
-		tempListItem.innerHTML = '<img src="'+library[ i ][ 0 ]+'" width="220;" height="220" />';
-		tempListItem.onclick = function()
-		{ 
-			//We want to close the window after an image has been chosen.
-			gifsterHideLibraryUI();
-			//Obviously we also want the image url to be inserted.
-			gifsterInsertText( this.getAttribute( 'gifsterInsertText' ) );
-		};
-		//append the thumbnail to the list.
-		list.appendChild( tempListItem );
+		gifsterAddImageToLibrary( library[ i ] );
 	}
+}
+
+function gifsterAddImageToLibrary( newImage )
+{
+	var list = document.getElementById( 'gifsterList' );
+	var tempListItem = 	document.createElement( 'gifsterListItem' );
+	var image = document.createElement( 'img' );
+
+	tempListItem.className = 'gifsterListItem';
+	//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
+	tempListItem.setAttribute( 'gifsterInsertText', newImage[ 0 ] );
+
+	$( image ).attr( 'class', 'lazy' );
+	$( image ).attr( 'data-src', newImage[ 0 ] );
+	$( image ).attr( 'src', chrome.extension.getURL("images/loading.gif") );
+	$( image ).attr( 'alt', newImage[ 1 ] );
+	$( image ).attr( 'width', '220' );
+	$( image ).attr( 'height', '220' );
+
+	tempListItem.appendChild( image );
+
+	tempListItem.onclick = function()
+	{ 
+		//We want to close the window after an image has been chosen.
+		gifsterHideLibraryUI();
+		//Obviously we also want the image url to be inserted.
+		gifsterInsertText( this.getAttribute( 'gifsterInsertText' ) );
+	};
+	//append the thumbnail to the list.
+	list.appendChild( tempListItem );
+
+	$( image ).lazy({
+		bind: "event",
+		enableThrottle: true,
+	    throttle: 250,
+	    effect: "fadeIn",
+	    effectTime: 3500
+	});
 }
 
 function gifsterInsertText( text )
