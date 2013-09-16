@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		else if ( request.action == "gifsterAddNewToLibrary" )
 		{
 			//Only add a new image if the library has already been initialized.
-			if ( gifsterListInit() )
+			if ( $( "#gifsterContainer" ).exists() )
 			{
 				gifsterAddImageToLibrary( request.newImage );
 			}
@@ -190,14 +190,14 @@ function gifsterAddImageToLibrary( newImage )
 	tempListItem.appendChild( image );
 
 	image.className = "lazy";
-	image.setAttribute( "data-src", newImage[ 0 ] );
+	image.setAttribute( "data-src", newImage );
 	image.src = chrome.extension.getURL( "images/loading.gif" );
 	image.setAttribute( "alt", chrome.extension.getURL( "images/error.png" ) );
 	image.width = 220;
 	image.height = 220;
 
 	//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
-	image.setAttribute( "gifsterInsertText", newImage[ 0 ] );
+	image.setAttribute( "gifsterInsertText", newImage );
 
 	image.onclick = function()
 	{ 
@@ -206,8 +206,8 @@ function gifsterAddImageToLibrary( newImage )
 		//Obviously we also want the image url to be inserted.
 		gifsterInsertText( this.getAttribute( "gifsterInsertText" ) );
 	};
-	//append the thumbnail to the list.
-	list.appendChild( tempListItem );
+	//insert the thumbnail to the front of the list.
+	list.insertBefore( tempListItem, list.firstChild );
 
 	$( image ).lazy({
 		bind: "event",

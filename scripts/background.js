@@ -1,8 +1,9 @@
 // Context menu built at install time. Also, check for localStorage capabilities.
 chrome.runtime.onInstalled.addListener( function() {
+
 	if ( !Modernizr.localstorage ) 
 	{
-		alert( "Your broswer is old!\nPlease upgrade your browser to use giftser!" );
+		alert( "Please upgrade your browser to use giftser!\nGet Chrome here:\n\nhttps://www.google.com/intl/en/chrome/browser/" );
 	}
 	chrome.contextMenus.create( { "title": "Bookmark image", "contexts":[ "image" ], "id": "bookmark" } );
 	chrome.contextMenus.create( { "title": "Insert image", "contexts":[ "editable" ], "id": "insert" } );
@@ -35,21 +36,23 @@ function contextClickHandler( info, tab )
 ***************************/
 function addBookmark( url, tab )
 {
-	//add a name for the bookmark
-	var name = prompt( "Enter a name for your bookmark:" );
-	
-	//replace all shit-disturbing characters with nice ones.
-	name = makeSafe( name );
+	if ( localStorage[ 0 ] == null )
+	{
+		localStorage [ 0 ] = 1;
+	}
 
-	//store key : value pair. ?? Maybe change this
-	localStorage[ url ] = name;
+	var currentIndex = localStorage[ 0 ];
+
+	localStorage[ currentIndex ] = url;
+
+	localStorage[ 0 ] = 1 * currentIndex + 1;
 
 	//send the newly added 
-	newImage = [ url, name ];
+	newImage = url;
 	chrome.tabs.sendMessage( tab.id, { action: "gifsterAddNewToLibrary", newImage: newImage }, function( response ){} );
 };
 
-//makes a string safe to insert into html.
+//Not currently being used -- Makes a string safe to insert into html.
 function makeSafe( str ) 
 {
 	str = str.trim();
@@ -68,20 +71,10 @@ function insertImage( tab )
 	var library = [];
 
 	//Add each localstorage item into an array
-	for (var key in localStorage)
+	for ( var i = 1; i < localStorage.length; i++ )
 	{
-		library.push( [ key, localStorage[ key ] ] );
+		library.push( localStorage.getItem( localStorage.key( i ) ) );
 	}
-
-	//sort the library alphabetically by name
-	library.sort( function( a, b )
-	{
-		a = a[1];
-		b = b[1];
-
-		//return -1 if a is < b, 1 if a > b, and 0 if they are equal.
-		return a < b ? -1 : ( a > b ? 1 : 0 );
-	});
 
 	//send the library to the content.js
     chrome.tabs.sendMessage( tab.id, { action: "gifsterShowLibraryUI", library: library }, function( response ){} );
