@@ -1,9 +1,10 @@
 chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 	{
-		if ( request.action == 'gifsterShowLibraryUI' ){
+		if ( request.action == "gifsterShowLibraryUI" )
+		{
 			gifsterShowLibraryUI( request.library );
 		}
-		else if ( request.action == 'gifsterAddNewToLibrary' )
+		else if ( request.action == "gifsterAddNewToLibrary" )
 		{
 			//Only add a new image if the library has already been initialized.
 			if ( gifsterListInit() )
@@ -13,64 +14,47 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		}
 	});
 
+//jQuery function to test if selector returns nothing
+$.fn.exists = function () {
+    return this.length !== 0;
+}
+
 function gifsterShowLibraryUI( library )
 {
-	var container =  document.getElementById( 'gifsterContainer' );
-
-	if ( !gifsterListInit() )
+	if ( !$( "#gifsterContainer" ).exists() )
 	{
 		//The UI div has not been inserted. Insert it now
 		gifsterInsertLibraryUI( library );
 		//Insert the user's gif library to the UI.
 		gifsterInsertLibrary( library );
 	}
-	else if( container.style.display != 'block' )
+	else if( $( "#gifsterContainer" ).css( "display" ) != "block" )
 	{
 		//Display the UI div.
-		container.style.display = 'block';
-	}
-}
-
-function gifsterListInit()
-{
-	//check if the div has been inserted into the page already.
-	var container =  document.getElementById( 'gifsterContainer' );
-
-	if ( container === null )
-	{
-		return false;
-	}
-	else
-	{
-		return true;
+		$( "#gifsterContainer" ).css( "display", "block" );
 	}
 }
 
 function gifsterHideLibraryUI()
 {
-	//This function can only be called through user interaction with the UI div;
-	//The UI div has been closed, so let's hide it.
-	var container =  document.getElementById( 'gifsterContainer' );
-
-	if( container.style.display != 'none' )
+	if( $( "#gifsterContainer" ).css( "display" ) != "none" )
 	{
-		//Hide the UI div.
-		$( "#gifsterList" ).scrollTop( 0 );
-		container.style.display = 'none';
+		$( "#gifsterList" ).scrollTop( 0 );						//Set the scroll position to the top
+		$( "#gifsterContainer" ).css( "display", "none" );		//Hide the UI
 	}
 }
 
 function gifsterInsertLibraryUI()
 {
 	//Prepare DOM for UI div
-	document.documentElement.style.height = '100%';
-	document.documentElement.style.width = '100%';
-	document.body.style.height = '100%';
-	document.body.style.width = '100%';
+	$( "html" ).css( "height", "100%" );
+	$( "html" ).css( "width", "100%" );
+	$( "body" ).css( "height", "100%" );
+	$( "body" ).css( "width", "100%" );
 
 	//Add the css to the page
-	var style = document.createElement( 'style' );
-	style.type = 'text/css';
+	var style = document.createElement( "style" );
+	style.type = "text/css";
 	style.innerHTML = 
 	'#gifsterContainer{' +
 	'position: fixed;' +
@@ -144,11 +128,11 @@ function gifsterInsertLibraryUI()
 	document.head.appendChild( style );
 
 	//Create the UI elements
-	var container = document.createElement( 'gifsterContainer' );
-	var div = document.createElement( 'gifsterDiv' );
-	var logo = document.createElement( 'img' );
-	var list = document.createElement( 'gifsterList' );
-	var closeButton = document.createElement( 'img' );
+	var container = document.createElement( "gifsterContainer" );
+	var div = document.createElement( "gifsterDiv" );
+	var logo = document.createElement( "img" );
+	var list = document.createElement( "gifsterList" );
+	var closeButton = document.createElement( "img" );
 
 	//Append all elements
 	document.body.appendChild( container );
@@ -158,20 +142,20 @@ function gifsterInsertLibraryUI()
 	div.appendChild( closeButton );
 
 	//Set style for container
-	container.id = 'gifsterContainer';
+	container.id = "gifsterContainer";
 
 	//Set style for div
-	div.id = 'gifsterDiv';
+	div.id = "gifsterDiv";
 
 	//Set attributes for logo
-	logo.id = 'gifsterLogo';
+	logo.id = "gifsterLogo";
 	logo.src = chrome.extension.getURL("images/icon_128.png");
 
 	//Set style for list
-	list.id = 'gifsterList';
+	list.id = "gifsterList";
 
 	//Set attributes for btn
-	closeButton.className = 'gifsterButton';
+	closeButton.className = "gifsterButton";
 	closeButton.src = chrome.extension.getURL("images/close_button.png");
 	closeButton.onclick = function()
 	{ 
@@ -198,29 +182,29 @@ function gifsterInsertLibrary( library )
 
 function gifsterAddImageToLibrary( newImage )
 {
-	var list = document.getElementById( 'gifsterList' );
-	var tempListItem = 	document.createElement( 'gifsterListItem' );
-	var image = document.createElement( 'img' );
+	var list = document.getElementById( "gifsterList" );
+	var tempListItem = 	document.createElement( "gifsterListItem" );
+	var image = document.createElement( "img" );
 
-	tempListItem.className = 'gifsterListItem';
-	//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
-	tempListItem.setAttribute( 'gifsterInsertText', newImage[ 0 ] );
-
-	$( image ).attr( 'class', 'lazy' );
-	$( image ).attr( 'data-src', newImage[ 0 ] );
-	$( image ).attr( 'src', chrome.extension.getURL("images/loading.gif") );
-	$( image ).attr( 'alt', newImage[ 1 ] );
-	$( image ).attr( 'width', '220' );
-	$( image ).attr( 'height', '220' );
-
+	tempListItem.className = "gifsterListItem";
 	tempListItem.appendChild( image );
 
-	tempListItem.onclick = function()
+	image.className = "lazy";
+	image.setAttribute( "data-src", newImage[ 0 ] );
+	image.src = chrome.extension.getURL( "images/loading.gif" );
+	image.setAttribute( "alt", chrome.extension.getURL( "images/error.png" ) );
+	image.width = 220;
+	image.height = 220;
+
+	//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
+	image.setAttribute( "gifsterInsertText", newImage[ 0 ] );
+
+	image.onclick = function()
 	{ 
 		//We want to close the window after an image has been chosen.
 		gifsterHideLibraryUI();
 		//Obviously we also want the image url to be inserted.
-		gifsterInsertText( this.getAttribute( 'gifsterInsertText' ) );
+		gifsterInsertText( this.getAttribute( "gifsterInsertText" ) );
 	};
 	//append the thumbnail to the list.
 	list.appendChild( tempListItem );
@@ -230,7 +214,16 @@ function gifsterAddImageToLibrary( newImage )
 		enableThrottle: true,
 	    throttle: 250,
 	    effect: "fadeIn",
-	    effectTime: 3500
+	    effectTime: 1000,
+	    onError: function( image )
+	    {
+	    	//if the image could not be loaded, this function is called
+	    	image.attr( "src", image.attr( "alt" ) );
+	    	image.onclick = function()
+	    	{
+	    		this.css( "display", "none" );
+	    	}
+	    }
 	});
 }
 

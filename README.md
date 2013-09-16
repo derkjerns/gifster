@@ -10,8 +10,6 @@ TODO:
 - Look at replacing bookmark prompt with GUI, or removing it all together.
 - Create a real logo / icon to replace the placeholder.
 - Change fields for link storage (id: url, instead of url: name?)
-- Get rid of global var activeField?
 - Avoid sending message every time you add bookmark?
-- Refactor to use jQuery calls
 
 //////////////////////
