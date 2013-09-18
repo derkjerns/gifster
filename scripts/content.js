@@ -1,32 +1,62 @@
+/**************************
+
+		LISTENERS
+
+***************************/
+
 chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 	{
-		if ( request.action == "gifsterShowLibraryUI" )
+		if ( request.action == "showLibrary" )
 		{
-			gifsterShowLibraryUI( request.library );
+			showLibrary( request.library );
 		}
-		else if ( request.action == "gifsterAddNewToLibrary" )
+		else if ( request.action == "addBookmark" )
 		{
 			//Only add a new image if the library has already been initialized.
 			if ( $( "#gifsterContainer" ).exists() )
 			{
-				gifsterAddImageToLibrary( request.newImage );
+				addBookmark( request.newImage );
 			}
 		}
 	});
 
-//jQuery function to test if selector returns nothing
+
+/**************************
+
+	  JQUERY FUNCTIONS
+
+***************************/
+
+//jQuery function to test if a selector returns nothing
 $.fn.exists = function () {
     return this.length !== 0;
 }
 
-function gifsterShowLibraryUI( library )
+
+/**************************
+
+	  GLOBAL VARIABLES
+
+***************************/
+
+//activeField - Global variable for keeping track of which textfield to insert the url into.
+var activeField;
+
+
+/**************************
+
+		UI VISIBILITY
+
+***************************/
+
+function showLibrary( library )
 {
 	if ( !$( "#gifsterContainer" ).exists() )
 	{
 		//The UI div has not been inserted. Insert it now
-		gifsterInsertLibraryUI( library );
+		createLibrary( library );
 		//Insert the user's gif library to the UI.
-		gifsterInsertLibrary( library );
+		populateLibrary( library );
 	}
 	else if( $( "#gifsterContainer" ).css( "display" ) != "block" )
 	{
@@ -35,16 +65,25 @@ function gifsterShowLibraryUI( library )
 	}
 }
 
-function gifsterHideLibraryUI()
+function hideLibrary()
 {
 	if( $( "#gifsterContainer" ).css( "display" ) != "none" )
 	{
-		$( "#gifsterList" ).scrollTop( 0 );						//Set the scroll position to the top
-		$( "#gifsterContainer" ).css( "display", "none" );		//Hide the UI
+		//Set the scroll position to the top
+		$( "#gifsterList" ).scrollTop( 0 );
+		//Hide the UI		
+		$( "#gifsterContainer" ).css( "display", "none" );
 	}
 }
 
-function gifsterInsertLibraryUI()
+
+/**************************
+
+	  UI CREATION
+
+***************************/
+
+function createLibrary()
 {
 	//Prepare DOM for UI div
 	$( "html" ).css( "height", "100%" );
@@ -160,27 +199,29 @@ function gifsterInsertLibraryUI()
 	closeButton.onclick = function()
 	{ 
 		//This button cancels the action by closing the window 
-		gifsterHideLibraryUI(); 
+		hideLibrary(); 
 	};
 }
 
-/**
-**	activeField - GLOBAL VARIABLE FOR KEEPING TRACK OF WHICH FIELD TO INSERT URL INTO
-**/
-var activeField;
 
-function gifsterInsertLibrary( library )
+/**************************
+
+		IMAGE LIBRARY
+
+***************************/
+
+function populateLibrary( library )
 {
 	//Set the global variable to the currently selected input field.
 	activeField = document.activeElement;
 	
 	for (var i = 0; i < library.length; i++)
 	{
-		gifsterAddImageToLibrary( library[ i ] );
+		addBookmark( library[ i ] );
 	}
 }
 
-function gifsterAddImageToLibrary( newImage )
+function addBookmark( newImage )
 {
 	var list = document.getElementById( "gifsterList" );
 	var tempListItem = 	document.createElement( "gifsterListItem" );
@@ -192,20 +233,13 @@ function gifsterAddImageToLibrary( newImage )
 	image.className = "lazy";
 	image.setAttribute( "data-src", newImage );
 	image.src = chrome.extension.getURL( "images/loading.gif" );
-	image.setAttribute( "alt", chrome.extension.getURL( "images/error.png" ) );
+	image.setAttribute( "alt", "Gifster image" );
 	image.width = 220;
 	image.height = 220;
 
-	//setting this attr will be used in the onclick function so that gifsterInsertText can insert the url.
-	image.setAttribute( "gifsterInsertText", newImage );
+	//setting this attr will be used in the onclick function so that gifsterImageURL can insert the url.
+	image.setAttribute( "gifsterImageURL", newImage );
 
-	image.onclick = function()
-	{ 
-		//We want to close the window after an image has been chosen.
-		gifsterHideLibraryUI();
-		//Obviously we also want the image url to be inserted.
-		gifsterInsertText( this.getAttribute( "gifsterInsertText" ) );
-	};
 	//insert the thumbnail to the front of the list.
 	list.insertBefore( tempListItem, list.firstChild );
 
@@ -215,20 +249,44 @@ function gifsterAddImageToLibrary( newImage )
 	    throttle: 250,
 	    effect: "fadeIn",
 	    effectTime: 1000,
-	    onError: function( image )
+	    afterLoad: function( element )
 	    {
-	    	//if the image could not be loaded, this function is called
-	    	image.attr( "src", image.attr( "alt" ) );
-	    	image.onclick = function()
-	    	{
-	    		this.css( "display", "none" );
-	    	}
+    		element.on( "click", function()
+    		{
+				//We want to close the window after an image has been chosen.
+				hideLibrary();
+				//Obviously we also want the image url to be inserted.
+				insertImageURL( this.getAttribute( "gifsterImageURL" ) );
+    		});
+	    },
+	    onError: function( element )
+	    {
+	    	removeBookmark( element.attr( "gifsterImageURL" ) );
 	    }
 	});
 }
 
-function gifsterInsertText( text )
+function removeBookmark( badUrl )
 {
-	//activeField is a global variable that is set in the gifsterInsertLibrary function
+	var list = document.getElementById( "gifsterList" );
+	var image = $( "img[ gifsterImageURL = '" + badUrl + "' ]" )[ 0 ];
+	var listItem = image.parentNode;
+
+	list.removeChild( listItem );
+
+	//Remove the bookmarks from extension storage
+	chrome.runtime.sendMessage( { action: "removeBookmark", badUrl: badUrl }, function(response) {} );
+}
+
+
+/**************************
+
+  SOURCE-PAGE INTERACTION
+
+***************************/
+
+function insertImageURL( text )
+{
+	//activeField is a global variable that is set in the populateLibrary function
 	activeField.value = activeField.value + text;
 }

@@ -7,9 +7,7 @@ INSERT ACTION available when you right click an editable text field.
 
 
 TODO:
-- Look at replacing bookmark prompt with GUI, or removing it all together.
 - Create a real logo / icon to replace the placeholder.
-- Change fields for link storage (id: url, instead of url: name?)
 - Avoid sending message every time you add bookmark?
 
 //////////////////////

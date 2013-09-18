@@ -1,3 +1,9 @@
+/**************************
+
+		LISTENERS
+
+***************************/
+
 // Context menu built at install time. Also, check for localStorage capabilities.
 chrome.runtime.onInstalled.addListener( function() {
 
@@ -8,6 +14,14 @@ chrome.runtime.onInstalled.addListener( function() {
 	chrome.contextMenus.create( { "title": "Bookmark image", "contexts":[ "image" ], "id": "bookmark" } );
 	chrome.contextMenus.create( { "title": "Insert image", "contexts":[ "editable" ], "id": "insert" } );
 });
+
+chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
+	{
+		if ( request.action == "removeBookmark" )
+		{
+			removeBookmark( request.badUrl );
+		}
+	});
 
 //listen for context menu clicks
 chrome.contextMenus.onClicked.addListener( function( info, tab )
@@ -31,6 +45,11 @@ function contextClickHandler( info, tab )
 
 /**************************
 
+		  ACTIONS
+
+***************************/
+/**************************
+
 	ADD BOOKMARK ACTION
 
 ***************************/
@@ -49,7 +68,7 @@ function addBookmark( url, tab )
 
 	//send the newly added 
 	newImage = url;
-	chrome.tabs.sendMessage( tab.id, { action: "gifsterAddNewToLibrary", newImage: newImage }, function( response ){} );
+	chrome.tabs.sendMessage( tab.id, { action: "addBookmark", newImage: newImage }, function( response ){} );
 };
 
 //Not currently being used -- Makes a string safe to insert into html.
@@ -77,6 +96,24 @@ function insertImage( tab )
 	}
 
 	//send the library to the content.js
-    chrome.tabs.sendMessage( tab.id, { action: "gifsterShowLibraryUI", library: library }, function( response ){} );
+    chrome.tabs.sendMessage( tab.id, { action: "showLibrary", library: library }, function( response ){} );
+}
+
+/**************************
+
+   REMOVE BOOKMARK ACTION
+
+***************************/
+function removeBookmark( badUrl )
+{
+	for ( var i = 1; i < localStorage.length; i++ )
+	{
+		var key = localStorage.key( i );
+
+		if ( badUrl == localStorage.getItem( key ) )
+		{
+			localStorage.removeItem( key );
+		}
+	}
 }
 
