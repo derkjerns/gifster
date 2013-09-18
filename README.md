@@ -7,8 +7,7 @@ INSERT ACTION available when you right click an editable text field.
 
 
 TODO:
-- Implement the 'Insert Image' functionality. Will this need GUI?
-- Look at replacing prompt with GUI.
 - Create a real logo / icon to replace the placeholder.
+- Avoid sending message every time you add bookmark?
 
 //////////////////////
