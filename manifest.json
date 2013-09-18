@@ -30,7 +30,6 @@
 	"web_accessible_resources": [
     	"images/icon_128.png",
     	"images/close_button.png",
-    	"images/loading.gif",
-    	"images/error.png"
+    	"images/loading.gif"
     ]
 }
