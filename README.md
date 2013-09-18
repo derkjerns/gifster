@@ -8,6 +8,5 @@ INSERT ACTION available when you right click an editable text field.
 
 TODO:
 - Create a real logo / icon to replace the placeholder.
-- Prevent duplicate bookmarks
 
 //////////////////////

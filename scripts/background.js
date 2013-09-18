@@ -67,6 +67,25 @@ function makeSafe( str )
     return str;
 };
 
+/*
+* isUnique checks if a url has already been added as a bookmark (prevent duplicates).
+*/
+function isUnique( url ) 
+{
+	//iterate through each localStorage item (except localStorage[ 0 ])
+	for ( var i = 1; i < localStorage.length; i++ )
+	{
+		//check if the url is the same as a url in localStorage
+		if( url == localStorage.getItem( localStorage.key( i ) ) )
+		{
+			//not unique 
+			return false;
+		}
+	}
+	//unique
+	return true;
+}
+
 
 /**************************
 
@@ -84,6 +103,12 @@ function makeSafe( str )
 */
 function addBookmark( url, tab )
 {
+	//check if the url is a duplicate bookmark.
+	if( !isUnique( url ) )
+	{
+		//if not unique, exit the function
+		return null;
+	}
 	//localStorage[ 0 ] is used to keep an incrementing index for bookmarks.
 	if ( localStorage[ 0 ] == null )
 	{
