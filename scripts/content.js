@@ -191,6 +191,22 @@ function createLibrary()
 	'overflow-y: auto;' +
 	'background-color: rgb( 235, 235, 235 );' +
 	'}' +
+	'#gifsterListSpacer{' +
+	'display: inline-block;' +
+	'width: 10px;' + 
+	'height: 401px;' +
+	'position: absolute;' +
+	'right: 0px;' +
+	'left: 0px;' +
+	'top: 0px;' +
+	'bottom: 0px;' +
+	'margin-right: auto;' +
+	'margin-left: auto;' +
+	'margin-top: auto;' +
+	'margin-bottom: auto;' +
+	'overflow-y: auto;' +
+	'background-color: rgb( 235, 235, 235 );' +
+	'}' +
 	'.gifsterListItem{' +
 	'display: inline-block;' +
 	'font: 15px;' +
@@ -245,6 +261,7 @@ function createLibrary()
 	var anchor = document.createElement( "a" );
 	var logo = document.createElement( "img" );
 	var list = document.createElement( "gifsterList" );
+	var listSpacer = document.createElement( "gifsterDiv" );
 	var closeButton = document.createElement( "img" );
 	//Create the donation elements
 	var donateForm = document.createElement( "form" );
@@ -260,6 +277,7 @@ function createLibrary()
 	div.appendChild( donateForm );
 	div.appendChild( closeButton );
 	anchor.appendChild( logo );
+	list.appendChild( listSpacer );
 	donateForm.appendChild( commandInput );
 	donateForm.appendChild( idInput );
 	donateForm.appendChild( submitInput );
@@ -296,6 +314,8 @@ function createLibrary()
 	logo.src = chrome.extension.getURL("images/logo_200.png");
 
 	list.id = "gifsterList";
+
+	listSpacer.id = "gifsterListSpacer";
 
 	closeButton.className = "gifsterButton";
 	closeButton.id = "gifsterCloseButton";
@@ -399,6 +419,9 @@ function addBookmark( newImage )
 	    	var actionDiv = listItem.lastChild;
 	    	var insertButton = actionDiv.firstChild;
 	    	var trashButton = actionDiv.lastChild;
+	    	
+			//load any new image that appears at the top by triggering scroll.
+			$( "#gifsterList" ).scroll();
 
 	        $(insertButton).on( "click", function()
     		{

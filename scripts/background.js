@@ -130,7 +130,7 @@ function addBookmark( url, tab )
 	localStorage.setItem( currentIndex, url );
  	//increment the index.
 	var newIndex = parseInt( localStorage.getItem( "0" ), 10 ) + 1;
-	localStorage.setItem( "0" ) = newIndex.toString();
+	localStorage.setItem( "0" , newIndex.toString() );
 	//update content.js with the newly added image
 	chrome.tabs.sendMessage( tab.id, { action: "addBookmark", newImage: url }, function( response ){} );
 };
