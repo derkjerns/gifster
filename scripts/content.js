@@ -12,8 +12,10 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		{
 			showLibrary( request.library );
 
+			//donate will be true after every 20 'insert' actions.
 			if ( request.donate === true )
 			{
+				//display the donate button
 				$( "#gifsterDonateButton" ).css( "display", "inline-block" );
 			}
 		}
