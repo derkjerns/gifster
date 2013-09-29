@@ -30,6 +30,10 @@
 	"web_accessible_resources": [
     	"images/icon_128.png",
     	"images/close_button.png",
-    	"images/loading.gif"
+    	"images/loading.gif",
+    	"images/logo_200.png",
+    	"images/insert.png",
+    	"images/trash.png",
+    	"images/donate.png"
     ]
 }

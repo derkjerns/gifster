@@ -7,6 +7,7 @@ INSERT ACTION available when you right click an editable text field.
 
 
 TODO:
-- Create a real logo / icon to replace the placeholder.
+- Add feature to remove a bookmark
+- Add donation reminder?
 
 //////////////////////

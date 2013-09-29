@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		//a request to remove a broken link from the localStorage
 		if ( request.action == "removeBookmark" )
 		{
-			removeBookmark( request.badUrl );
+			removeBookmark( request.url );
 		}
 	});
 
@@ -110,18 +110,27 @@ function addBookmark( url, tab )
 		return null;
 	}
 	//localStorage[ 0 ] is used to keep an incrementing index for bookmarks.
-	if ( localStorage[ 0 ] == null )
+	if ( localStorage.getItem( "0" ) === null )
 	{
-		//initialized the index # to 1.
-		localStorage [ 0 ] = 1;
+		//initialize the index # to 1.
+		localStorage.setItem( "0", "1" );
 	}
+
 	//get the next unused index number
-	var currentIndex = localStorage[ 0 ];
+	var currentIndex = localStorage.getItem( "0" );
+	//localStorage stores everything as strings, add leading zeroes to ensure proper storage order.
+	var numZeroes = 9 - currentIndex.length;
+	//add the leading zeroes
+	for( var i = 0; i < numZeroes; i++ )
+	{
+		currentIndex = "0" + currentIndex;
+	}
+
 	//store the url
-	localStorage[ currentIndex ] = url;
-	//increment the index.
-	//Note: the "*" is required because javascript.
-	localStorage[ 0 ] = 1 * currentIndex + 1;
+	localStorage.setItem( currentIndex, url );
+ 	//increment the index.
+	var newIndex = parseInt( localStorage.getItem( "0" ), 10 ) + 1;
+	localStorage.setItem( "0" ) = newIndex.toString();
 	//update content.js with the newly added image
 	chrome.tabs.sendMessage( tab.id, { action: "addBookmark", newImage: url }, function( response ){} );
 };
@@ -139,15 +148,45 @@ function addBookmark( url, tab )
 */
 function insertImage( tab )
 {
+
+	var donate = false;
+	var reminderInterval = 10;
+
+    if ( localStorage.getItem( "donate" ) === null )
+    {
+        //initialize the donate reminder to 1
+        localStorage.setItem( "donate", "1" );
+    }
+    else if( parseInt( localStorage.getItem( "donate" ), 10 ) <= reminderInterval )
+    {
+    	var newValue = parseInt( localStorage.getItem( "donate" ), 10 ) + 1;
+        localStorage.setItem( "donate", newValue.toString() );
+    }
+    else
+    {
+        donate = true;
+        localStorage.setItem( "donate", "1" );
+    }
+
 	//an array to contain all of the image urls.
 	var library = [];
+	//temp variables for holding localStorage values.
+	var tempKey;
+	var tempItem;
 	//Add each localStorage item into an array (except for localStorage[ 0 ])
-	for ( var i = 1; i < localStorage.length; i++ )
+	for ( var i = 0; i < localStorage.length; i++ )
 	{
-		library.push( localStorage.getItem( localStorage.key( i ) ) );
+		tempKey = localStorage.key( i )
+		if ( tempKey != "0" && tempKey != "donate" )
+		{
+			tempItem = localStorage.getItem( tempKey );
+			library.push( tempItem );
+		}
+
 	}
+
 	//send the library to content.js
-    chrome.tabs.sendMessage( tab.id, { action: "showLibrary", library: library }, function( response ){} );
+    chrome.tabs.sendMessage( tab.id, { action: "showLibrary", library: library, donate: donate }, function( response ){return null;} );
 }
 
 /**************************
@@ -159,15 +198,15 @@ function insertImage( tab )
 /*
 * removeBookmark removes a bookmark from localStorage
 */
-function removeBookmark( badUrl )
+function removeBookmark( url )
 {
-	//iterate through each localStorage item until the index for the badUrl is found
+	//iterate through each localStorage item until the index for the url is found
 	for ( var i = 1; i < localStorage.length; i++ )
 	{
 		//temporarily store the ith key
 		var key = localStorage.key( i );
 		//check if the value at the ith index is the badUrl
-		if ( badUrl == localStorage.getItem( key ) )
+		if ( url == localStorage.getItem( key ) )
 		{
 			//remove the key:value pair
 			localStorage.removeItem( key );
