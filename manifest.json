@@ -1,0 +1,39 @@
+{
+	"name":"gifster",
+	"version":"0.1",
+	"manifest_version":2,
+	"description":"gifster chrome extension",
+	"background":{
+		"scripts":[
+			"scripts/modernizr.min.js", 
+			"scripts/background.js"
+			],
+		"persistent": false
+	},
+	"content_scripts": [
+      {
+        "matches": ["https://*/*", "http://*/*", "file://*/*"],
+        "js": ["scripts/jquery-1.10.2.min.js", "scripts/jquery.lazy.min.js", "scripts/content.js"],
+        "run_at": "document_end"
+      }
+    ],
+	"permissions":[
+		"contextMenus", 
+		"tabs",
+		"http://*/*",
+		"https://*/*"
+		],
+	"icons":{
+		"16":"images/icon_16.png",
+		"128":"images/icon_128.png"
+	},
+	"web_accessible_resources": [
+    	"images/icon_128.png",
+    	"images/close_button.png",
+    	"images/loading.gif",
+    	"images/logo_200.png",
+    	"images/insert.png",
+    	"images/trash.png",
+    	"images/donate.png"
+    ]
+}
