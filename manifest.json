@@ -1,6 +1,6 @@
 {
 	"name":"gifster",
-	"version":"0.4",
+	"version":"0.5",
 	"manifest_version":2,
 	"description":"gifster chrome extension",
 	"background":{
@@ -14,6 +14,7 @@
       {
         "matches": ["https://*/*", "http://*/*", "file://*/*"],
         "js": ["scripts/jquery-1.10.2.min.js", "scripts/jquery.lazy.min.js", "scripts/content.js"],
+        "css": ["styles/styles.css"],
         "run_at": "document_end"
       }
     ],
@@ -35,5 +36,5 @@
     	"images/insert.png",
     	"images/trash.png",
     	"images/donate.png"
-    ]
+   	]
 }

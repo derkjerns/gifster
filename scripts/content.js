@@ -28,6 +28,14 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 				addBookmark( request.newImage );
 			}
 		}
+		else if ( request.action == "removeBookmark" )
+		{
+			//Only add a new bookmark if the library has already been initialized.
+			if ( $( "#gifsterContainer" ).exists() )
+			{
+				removeBookmark( request.url );
+			}
+		}
 	});
 
 
@@ -117,143 +125,14 @@ function createLibrary()
 	$( "body" ).css( "height", "100%" );
 	$( "body" ).css( "width", "100%" );
 
-	//This is the css that is needed for the UI
-	var style = document.createElement( "style" );
-	style.type = "text/css";
-	style.innerHTML = 
-	'#gifsterContainer{' +
-	'position: fixed;' +
-	'top: 0px;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'height: 100%;' +
-	'width: 100%;' +
-	'display: block;' +
-	'z-index: 9999;' +
-	'background-color: rgba( 97, 97, 97, 0.3 );' +
-	'}' +
-	'#gifsterDiv{' +
-	'position: fixed;' +
-	'top: 0px;' +
-	'bottom: 0px;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'margin-top: auto;' +
-	'margin-bottom: auto;' +
-	'height: 480px;' +
-	'width: 500px;' +
-	'display: block;' +
-	'background-color: rgb( 255, 255, 255 );' +
-	'}' +
-	'#gifsterLogo{' +
-	'display: inline-block;' +
-	'width: 50px;' +
-	'height: 50px;' +
-	'}' +
-	'#gifsterLogoAnchor{' +
-	'display: inline-block;' +
-	'padding: 10px;' +
-	'width: 50px;' +
-	'height: 50px;' +
-	'cursor: pointer;' +
-	'}' +
-	'#gifsterCloseButton{' +
-	'width: 20px;' +
-	'height: 20px;' +
-	'position: absolute;' +
-	'top: 10px;' +
-	'right: 10px;' +
-	'cursor: pointer;' +
-	'}' +
-	'.gifsterActionButton{' +
-	'width: 60px;' +
-	'height: 60px;' +
-	'padding: 10px;' +
-	'cursor: pointer;' +
-	'}' +
-	'#gifsterList{' +
-	'display: block;' +
-	'width: 480px;' + 
-	'height: 400px;' +
-	'position: absolute;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'top: 0px;' +
-	'bottom: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'margin-top: 70px;' +
-	'margin-bottom: auto;' +
-	'overflow-y: auto;' +
-	'background-color: rgb( 235, 235, 235 );' +
-	'}' +
-	'#gifsterListSpacer{' +
-	'display: inline-block;' +
-	'width: 10px;' + 
-	'height: 401px;' +
-	'position: absolute;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'top: 0px;' +
-	'bottom: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'margin-top: auto;' +
-	'margin-bottom: auto;' +
-	'overflow-y: auto;' +
-	'background-color: rgb( 235, 235, 235 );' +
-	'}' +
-	'.gifsterListItem{' +
-	'display: inline-block;' +
-	'font: 15px;' +
-	'color: black;' +
-	'width: 220px;' +
-	'height: 220px;' +
-	'position: relative;' +
-	'padding: 10px;' +
-	'}' +
-	'.gifsterActionDiv{' +
-	'width: 160px;' +
-	'height: 80px;' +
-	'display: none;' +
-	'position: absolute;' +
-	'top: 0px;' +
-	'bottom: 0px;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'margin-top: auto;' +
-	'margin-bottom: auto;' +
-	'-webkit-border-radius: 10px;'+
-	'-moz-border-radius: 10px;' +
-	'border-radius: 10px;' +
-	'background-color: rgba( 255, 255, 255, 0.5 );'+
-	'}' +
-	'#gifsterDonateForm{' +
-	'display: inline-block;' +
-	'}' +
-	'#gifsterDonateButton{' +
-	'display: none;' +
-	'position: absolute;' +
-	'top: 0px;' +
-	'bottom: 0px;' +
-	'right: 0px;' +
-	'left: 0px;' +
-	'margin-right: auto;' +
-	'margin-left: auto;' +
-	'margin-top: 10px;' +
-	'margin-bottom: auto;' +
-	'width: 50px;' +
-	'height: 50px;' +
-	'}';
+	// //This is the css that is needed for the UI
+	// var style = document.createElement("link");
+	// style.href = chrome.extension.getURL("styles/styles.css");
+	// style.type = "text/css";
+	// style.rel = "stylesheet";
 
-	//Add the css to the source page head element
-	document.head.appendChild( style );
+	// //Add the css to the source page head element
+	// document.head.appendChild( style );
 
 	//Create the UI dom elements
 	var container = document.createElement( "gifsterContainer" );
@@ -439,7 +318,7 @@ function addBookmark( newImage )
     			if ( confirm(confirmText) )
     			{
     				//remove the image
-    				removeBookmark( this.parentNode.getAttribute( "gifsterImageURL" ) );
+    				removeBookmarkBackend( this.parentNode.getAttribute( "gifsterImageURL" ) );
     			}
     		});
 	    },
@@ -453,7 +332,17 @@ function addBookmark( newImage )
 }
 
 /*
-* removeBookmark removes images with broken links from the UI and background
+* removeBookmarkBackend removes images with broken links from the background,
+* The background then sends a message to all tabs so that the bookmark is removed from the UI
+*/
+function removeBookmarkBackend( url )
+{
+	//Remove the bookmarks from extension storage (ie. background)
+	chrome.runtime.sendMessage( { action: "removeBookmark", url: url }, function(response) {} );
+}
+
+/*
+* removeBookmark removes images from the UI
 */
 function removeBookmark( url )
 {
@@ -462,9 +351,6 @@ function removeBookmark( url )
 	var listItem = image.parentNode;
 
 	list.removeChild( listItem );
-
-	//Remove the bookmarks from extension storage (ie. background)
-	chrome.runtime.sendMessage( { action: "removeBookmark", url: url }, function(response) {} );
 }
 
 
