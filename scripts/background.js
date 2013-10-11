@@ -131,9 +131,14 @@ function addBookmark( url, tab )
  	//increment the index.
 	var newIndex = parseInt( localStorage.getItem( "0" ), 10 ) + 1;
 	localStorage.setItem( "0" , newIndex.toString() );
+	
 	//update content.js with the newly added image
-	chrome.tabs.sendMessage( tab.id, { action: "addBookmark", newImage: url }, function( response ){} );
-};
+	chrome.tabs.query({}, function(tabs) {
+		for (var i=0; i<tabs.length; i++) {
+			chrome.tabs.sendMessage( tabs[i].id, { action: "addBookmark", newImage: url }, function( response ){});
+		}
+	});
+}
 
 
 /**************************
@@ -213,5 +218,12 @@ function removeBookmark( url )
 			break;
 		}
 	}
+
+	//update content.js with the removed image
+	chrome.tabs.query({}, function(tabs) {
+		for (var i=0; i<tabs.length; i++) {
+			chrome.tabs.sendMessage( tabs[i].id, { action: "removeBookmark", url: url }, function( response ){});
+		}
+	});
 }
 
