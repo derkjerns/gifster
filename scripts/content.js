@@ -88,6 +88,9 @@ function showLibrary( library )
 		//Display the UI div
 		$( "#gifsterContainer" ).css( "display", "block" );
 	}
+
+	//scroll triggers lazy loading so that new images in the library are loaded.
+	$( "#gifsterList" ).scroll();
 }
 
 /*
@@ -98,12 +101,40 @@ function hideLibrary()
 	//Check if the UI is currently being displayed.
 	if( $( "#gifsterContainer" ).css( "display" ) != "none" )
 	{
-		//Hide the UI		
-		$( "#gifsterContainer" ).css( "display", "none" );
+		//Ensure that the remove image 'confirmation window' is closed.
+		hideConfirmation();
 		//Set the scroll position to the top to prepare for the next time the UI is displayed.
 		$( "#gifsterList" ).scrollTop( 0 );
+		//Hide the UI		
+		$( "#gifsterContainer" ).css( "display", "none" );
 		//Hide the donation button to prepare for the next time the UI is displayed.
 		$( "#gifsterDonateButton" ).css( "display", "none" );
+	}
+}
+
+/*
+* showConfirmation shows the remove image confirmation window.
+*/
+function showConfirmation()
+{
+	//If the confimation window is currently hidden.
+	if( $( "#gifsterConfirm" ).css( "display" ) != "block" )
+	{
+		//Display the confirmation window
+		$( "#gifsterConfirm" ).css( "display", "block" );
+	}
+}
+
+/*
+* hideLibrary hides the remove image confirmation window.
+*/
+function hideConfirmation()
+{
+	//If the confirmation window is currently being displayed.
+	if( $( "#gifsterConfirm" ).css( "display" ) != "none" )
+	{
+		//Hide the confirmation window
+		$( "#gifsterConfirm" ).css( "display", "none" );
 	}
 }
 
@@ -119,21 +150,6 @@ function hideLibrary()
 */
 function createLibrary()
 {
-	//Prepare the source DOM for the UI
-	$( "html" ).css( "height", "100%" );
-	$( "html" ).css( "width", "100%" );
-	$( "body" ).css( "height", "100%" );
-	$( "body" ).css( "width", "100%" );
-
-	// //This is the css that is needed for the UI
-	// var style = document.createElement("link");
-	// style.href = chrome.extension.getURL("styles/styles.css");
-	// style.type = "text/css";
-	// style.rel = "stylesheet";
-
-	// //Add the css to the source page head element
-	// document.head.appendChild( style );
-
 	//Create the UI dom elements
 	var container = document.createElement( "gifsterContainer" );
 	var div = document.createElement( "gifsterDiv" );
@@ -147,6 +163,12 @@ function createLibrary()
 	var commandInput = document.createElement( "input" );
 	var idInput = document.createElement( "input" );
 	var submitInput = document.createElement( "input" );
+	//Create the confirmation window elements
+	var confirmWindow = document.createElement( "gifsterDiv" );
+	var confirmPrompt = document.createElement( "gifsterText" );
+	var confirmTrueText = document.createElement( "gifsterText" );
+	var confirmFalseText = document.createElement( "gifsterText" );
+
 
 	//Append all elements
 	document.body.appendChild( container );
@@ -155,11 +177,15 @@ function createLibrary()
 	div.appendChild( anchor );
 	div.appendChild( donateForm );
 	div.appendChild( closeButton );
+	div.appendChild( confirmWindow );
 	anchor.appendChild( logo );
 	list.appendChild( listSpacer );
 	donateForm.appendChild( commandInput );
 	donateForm.appendChild( idInput );
 	donateForm.appendChild( submitInput );
+	confirmWindow.appendChild( confirmPrompt );
+	confirmWindow.appendChild( confirmTrueText );
+	confirmWindow.appendChild( confirmFalseText );
 
 	//Set attributes for the donation form
 	donateForm.action = "https://www.paypal.com/cgi-bin/webscr";
@@ -180,22 +206,22 @@ function createLibrary()
 	submitInput.name = "image";
 	submitInput.alt = "Donate button";
 
-	//Set attributes for UI elements
+	//Set attributes for main containers
 	container.id = "gifsterContainer";
+	div.id = "gifsterWindow";
 
-	div.id = "gifsterDiv";
-
+	//Set attributes for logo
 	anchor.id = "gifsterLogoAnchor";
-	anchor.href = "https://github.com/DerekJones91/gifster";
+	anchor.href = "http://derekjonescanada.github.io/gifster";
 	anchor.target = "_blank";
-
 	logo.id = "gifsterLogo";
 	logo.src = chrome.extension.getURL("images/logo_200.png");
 
+	//Set attributes for list container
 	list.id = "gifsterList";
-
 	listSpacer.id = "gifsterListSpacer";
 
+	//Set attributes for close button
 	closeButton.className = "gifsterButton";
 	closeButton.id = "gifsterCloseButton";
 	closeButton.src = chrome.extension.getURL("images/close_button.png");
@@ -203,6 +229,28 @@ function createLibrary()
 	{ 
 		//Clicking the close button will hide the UI
 		hideLibrary(); 
+	};
+
+	//Set attributes for confirmation container
+	confirmWindow.id = "gifsterConfirm";
+
+	//Set attributes for confirmation text and buttons
+	confirmPrompt.className = "gifsterConfirmText gifsterConfirmPrompt";
+	confirmPrompt.innerHTML = "Remove this image from your library?";
+	confirmTrueText.className = "gifsterConfirmText gifsterConfirmButton gifsterConfirmTrue";
+	confirmTrueText.innerHTML = "Ok";
+	confirmTrueText.onclick = function()
+	{ 
+		//confirm that the user did indeed want to remove the image
+		//the attribute "imageUrl" is set in the onclick handler of the trash button (see addBookmark function)
+		confirmRemoveBookmark( true, this.getAttribute( "imageUrl" ) ); 
+	};
+	confirmFalseText.className = "gifsterConfirmText gifsterConfirmButton gifsterConfirmFalse";
+	confirmFalseText.innerHTML = "Cancel";
+	confirmFalseText.onclick = function()
+	{ 
+		//confirm that the user did indeed want to remove the image
+		confirmRemoveBookmark( false ); 
 	};
 }
 
@@ -292,15 +340,12 @@ function addBookmark( newImage )
 	    effectTime: 1000,
 	    afterLoad: function( element )
 	    {
-	    	//Some of these are un-needed but doing it this way makes what I am doing more clear.
+	    	//Some of these are un-needed, but doing it in a one-liner makes things confusing.
 	    	var image = $(element)[0];
 	    	var listItem = image.parentNode;
 	    	var actionDiv = listItem.lastChild;
 	    	var insertButton = actionDiv.firstChild;
 	    	var trashButton = actionDiv.lastChild;
-	    	
-			//load any new image that appears at the top by triggering scroll.
-			$( "#gifsterList" ).scroll();
 
 	        $(insertButton).on( "click", function()
     		{
@@ -314,12 +359,8 @@ function addBookmark( newImage )
     		$(trashButton).on( "click", function()
     		{
     			//Confirm that the user wants to remove the image from their library.
-    			var confirmText = "Remove this image from your library?";
-    			if ( confirm(confirmText) )
-    			{
-    				//remove the image
-    				removeBookmarkBackend( this.parentNode.getAttribute( "gifsterImageURL" ) );
-    			}
+    			showConfirmation();
+    			$("#gifsterConfirm :nth-child(2)").attr("imageUrl", this.parentNode.getAttribute( "gifsterImageURL" ) );
     		});
 	    },
 	    onError: function( element )
@@ -346,6 +387,7 @@ function removeBookmarkBackend( url )
 */
 function removeBookmark( url )
 {
+	//Remove the bookmark from the library UI
 	var list = document.getElementById( "gifsterList" );
 	var image = $( "img[ gifsterImageURL = '" + url + "' ]" )[ 0 ];
 	var listItem = image.parentNode;
@@ -353,6 +395,21 @@ function removeBookmark( url )
 	list.removeChild( listItem );
 }
 
+/*
+* The confirmation buttons call this function.
+* The param 'confirm' confirms if the user wanted to remove the image
+*/
+function confirmRemoveBookmark( confirm, url )
+{
+	if( confirm == true )
+	{
+		//remove the image
+    	removeBookmarkBackend( url );
+	}
+	
+	//hide the confirm window
+	hideConfirmation();
+}
 
 /**************************
 

@@ -1,167 +1,241 @@
+html{
+	width: 100%;
+	height: 100%;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+}
+
 #gifsterContainer{ 
-position: fixed; 
-top: 0px; 
-right: 0px; 
-left: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-height: 100%; 
-width: 100%; 
-display: block; 
-z-index: 9999; 
-background-color: rgba( 97, 97, 97, 0.3 ); 
+	position: fixed; 
+	top: 0px; 
+	right: 0px; 
+	left: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	height: 100%; 
+	width: 100%; 
+	display: block; 
+	z-index: 9999; 
+	background-color: rgba( 97, 97, 97, 0.3 ); 
 } 
 
 #gifsterContainer *{
-text-align:left;
-border:none;
+	text-align:left;
+	border:none;
 } 
 
-#gifsterContainer *::-webkit-scrollbar {
-    width: 2px;
-}
- 
-#gifsterContainer *::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3); 
-    -webkit-border-radius: 0px;
-    border-radius: 10px;
-}
- 
-#gifsterContainer *::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 0px;
-    border-radius: 10px;
-    background: rgba(200,0,200,0.8); 
-    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.5); 
-}
-
-#gifsterContainer *::-webkit-scrollbar-thumb:window-inactive {
-	background: rgba(0,200,200,0.4); 
-}
-
-#gifsterDiv{ 
-position: fixed; 
-top: 0px; 
-bottom: 0px; 
-right: 0px; 
-left: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-margin-top: auto; 
-margin-bottom: auto; 
-height: 480px; 
-width: 510px; 
-display: block; 
-background-color: rgb( 255, 255, 255 ); 
+#gifsterWindow{ 
+	position: fixed; 
+	top: 0px; 
+	bottom: 0px; 
+	right: 0px; 
+	left: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: auto; 
+	margin-bottom: auto; 
+	height: 480px; 
+	width: 510px; 
+	display: block; 
+	background-color: rgb( 255, 255, 255 ); 
 } 
 
 #gifsterLogo{ 
-display: inline-block; 
-width: 50px; 
-height: 50px; 
+	display: inline-block; 
+	width: 50px; 
+	height: 50px; 
 } 
 
 #gifsterLogoAnchor{ 
-display: inline-block; 
-padding: 10px; 
-width: 50px; 
-height: 50px; 
-cursor: pointer; 
+	display: inline-block; 
+	padding: 10px; 
+	width: 50px; 
+	height: 50px; 
+	cursor: pointer; 
 } 
 
 #gifsterCloseButton{ 
-width: 20px; 
-height: 20px; 
-position: absolute; 
-top: 10px; 
-right: 10px; 
-cursor: pointer; 
+	width: 20px; 
+	height: 20px; 
+	position: absolute; 
+	top: 10px; 
+	right: 10px; 
+	cursor: pointer; 
 } 
 
 .gifsterActionButton{ 
-width: 60px; 
-height: 60px; 
-padding: 10px; 
-cursor: pointer; 
+	width: 60px; 
+	height: 60px; 
+	padding: 10px; 
+	cursor: pointer; 
 } 
 
 #gifsterList{ 
-display: block; 
-width: 490px;  
-height: 400px; 
-position: absolute; 
-right: 0px; 
-left: 0px; 
-top: 0px; 
-bottom: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-margin-top: 70px; 
-margin-bottom: auto; 
-overflow-y: auto; 
-background-color: rgb( 235, 235, 235 ); 
+	display: block; 
+	width: 490px;  
+	height: 400px; 
+	position: absolute; 
+	right: 0px; 
+	left: 0px; 
+	top: 0px; 
+	bottom: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: 70px; 
+	margin-bottom: auto; 
+	overflow-y: auto; 
+	background-color: rgb( 235, 235, 235 ); 
 } 
 
+#gifsterList::-webkit-scrollbar {
+	width: 2px;
+}
+
+#gifsterList::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3); 
+	-webkit-border-radius: 0px;
+	border-radius: 10px;
+}
+
+#gifsterList::-webkit-scrollbar-thumb {
+	-webkit-border-radius: 0px;
+	border-radius: 10px;
+	background: rgba(200,0,200,0.8); 
+	-webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.5); 
+}
+
+#gifsterList::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(0,200,200,0.4); 
+}
+
 #gifsterListSpacer{ 
-display: inline-block; 
-width: 10px;  
-height: 401px; 
-position: absolute; 
-right: 0px; 
-left: 0px; 
-top: 0px; 
-bottom: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-margin-top: auto; 
-margin-bottom: auto; 
-overflow-y: auto; 
-background-color: rgb( 235, 235, 235 ); 
+	display: inline-block; 
+	width: 10px;  
+	height: 401px; 
+	position: absolute; 
+	right: 0px; 
+	left: 0px; 
+	top: 0px; 
+	bottom: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: auto; 
+	margin-bottom: auto; 
+	overflow-y: auto; 
+	background-color: rgb( 235, 235, 235 ); 
 } 
 
 .gifsterListItem{ 
-display: inline-block; 
-font: 15px; 
-color: black; 
-width: 220px; 
-height: 220px; 
-position: relative; 
-padding: 10px; 
+	display: inline-block; 
+	font: 15px; 
+	color: black; 
+	width: 220px; 
+	height: 220px; 
+	position: relative; 
+	padding: 10px; 
 } 
 
 .gifsterActionDiv{ 
-width: 160px; 
-height: 80px; 
-display: none; 
-position: absolute; 
-top: 0px; 
-bottom: 0px; 
-right: 0px; 
-left: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-margin-top: auto; 
-margin-bottom: auto; 
--webkit-border-radius: 10px;
--moz-border-radius: 10px; 
-border-radius: 10px; 
-background-color: rgba( 255, 255, 255, 0.5 );
+	width: 160px; 
+	height: 80px; 
+	display: none; 
+	position: absolute; 
+	top: 0px;
+	bottom: 0px; 
+	right: 0px; 
+	left: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: auto; 
+	margin-bottom: auto; 
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px; 
+	border-radius: 10px; 
+	background-color: rgba( 255, 255, 255, 0.5 );
 } 
 
 #gifsterDonateForm{ 
-display: inline-block; 
+	display: inline-block; 
 }
 
 #gifsterDonateButton{ 
-display: none; 
-position: absolute; 
-top: 0px; 
-bottom: 0px; 
-right: 0px; 
-left: 0px; 
-margin-right: auto; 
-margin-left: auto; 
-margin-top: 10px; 
-margin-bottom: auto; 
-width: 50px; 
-height: 50px; 
+	display: none; 
+	position: absolute; 
+	top: 0px; 
+	bottom: 0px; 
+	right: 0px; 
+	left: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: 10px; 
+	margin-bottom: auto; 
+	width: 50px; 
+	height: 50px; 
+}
+
+#gifsterConfirm{
+	display: none; 
+	width: 490px;  
+	height: 400px; 
+	position: absolute; 
+	right: 0px; 
+	left: 0px; 
+	top: 0px; 
+	bottom: 0px; 
+	margin-right: auto; 
+	margin-left: auto; 
+	margin-top: 70px; 
+	margin-bottom: auto;
+	background-color: rgb( 255, 255, 255 );
+	vertical-align: middle;
+}
+
+.gifsterConfirmText{
+	display: block;
+	font-family: 'Lucida Grande', sans-serif;
+	font-size: 16px;
+	text-align: center 		!important;
+	position: absolute;
+	right: 0px; 
+	left: 0px; 
+	top: 0px; 
+	bottom: 0px;
+	margin-right: auto; 
+	margin-bottom: auto;
+	line-height: 30px;
+	height:30px;
+
+}
+
+.gifsterConfirmPrompt{
+	width: 490px;
+	margin-left: auto; 
+	margin-top: 130px; 
+}
+
+.gifsterConfirmButton{
+	padding:12px;
+	width: 100px;
+	margin-top: 190px; 
+	background-color: rgb( 255, 255, 255 );
+	cursor: pointer;
+}
+
+.gifsterConfirmTrue{
+	margin-left: 105px; 
+}
+
+.gifsterConfirmFalse{
+	margin-left: 265px; 
+}
+
+.gifsterConfirmTrue:hover{
+	background-color: rgb( 200, 255, 200 );
+}
+
+.gifsterConfirmFalse:hover{
+	background-color: rgb( 255, 200, 200 );
 }
