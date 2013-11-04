@@ -74,6 +74,9 @@ var activeField;
 */
 function showLibrary( library )
 {
+	//Set the global variable 'activeField' to the input field that is currently selected in the source page.
+	activeField = document.activeElement;
+
 	//Check if the UI window has been inserted into the source HTML already
 	if ( !$( "#gifsterContainer" ).exists() )
 	{
@@ -126,7 +129,7 @@ function showConfirmation()
 }
 
 /*
-* hideLibrary hides the remove image confirmation window.
+* hideConfirmation hides the remove image confirmation window.
 */
 function hideConfirmation()
 {
@@ -265,10 +268,7 @@ function createLibrary()
 * populateLibrary adds the image library into the UI
 */
 function populateLibrary( library )
-{
-	//Set the global variable 'activeField' to the input field that is currently selected in the source page.
-	activeField = document.activeElement;
-	
+{	
 	//'library' contains all of the links to the user's images.
 	for (var i = 0; i < library.length; i++)
 	{
@@ -421,8 +421,21 @@ function confirmRemoveBookmark( confirm, url )
 * insertImageURL inserts the URL of an image into the textfield that the user
 * selected in the source page.
 */
-function insertImageURL( text )
+function insertImageURL( url )
 {
-	//activeField is a global variable that is set in the populateLibrary function
-	activeField.value = activeField.value + text;
+
+	//activeField is a global variable that is set in the showLibrary function
+
+	if( activeField.nodeName.toLowerCase() == "input" )
+	{
+		//If the activeField is an INPUT html element
+		//append the image url to the "value" attribute
+		activeField.value = activeField.value + url;
+	}
+	else
+	{
+		//if the node is anything other than an INPUT html element
+		//append the image url to the innerHTML attributes
+		activeField.innerHTML = activeField.innerHTML + url;
+	}
 }
