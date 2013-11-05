@@ -71,6 +71,7 @@ body{
 	height: 60px; 
 	padding: 10px; 
 	cursor: pointer; 
+	display: inline-block;
 } 
 
 #gifsterList{ 
@@ -176,7 +177,7 @@ body{
 	height: 50px; 
 }
 
-#gifsterConfirm{
+.gifsterPrompt{
 	display: none; 
 	width: 490px;  
 	height: 400px; 
@@ -193,8 +194,8 @@ body{
 	vertical-align: middle;
 }
 
-.gifsterConfirmText{
-	display: block;
+.gifsterText{
+	display: inline-block;
 	font-family: 'Lucida Grande', sans-serif;
 	font-size: 16px;
 	text-align: center 		!important;
@@ -206,29 +207,38 @@ body{
 	margin-right: auto; 
 	margin-bottom: auto;
 	line-height: 30px;
-	height:30px;
-
+	height: 30px;
 }
 
-.gifsterConfirmPrompt{
+.gifsterPromptText{
 	width: 490px;
 	margin-left: auto; 
-	margin-top: 130px; 
+	margin-top: 100px; 
 }
 
-.gifsterConfirmButton{
+.gifsterPromptButton{
 	padding:12px;
 	width: 100px;
-	margin-top: 190px; 
 	background-color: rgb( 255, 255, 255 );
 	cursor: pointer;
 }
 
+.gifsterPromptLink{
+	width: 490px;
+	margin-top: 150px;
+	margin-left: auto; 
+	background-color: rgb( 255, 255, 255 );
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
 .gifsterConfirmTrue{
+	margin-top: 160px; 
 	margin-left: 105px; 
 }
 
 .gifsterConfirmFalse{
+	margin-top: 160px; 
 	margin-left: 265px; 
 }
 
@@ -238,4 +248,22 @@ body{
 
 .gifsterConfirmFalse:hover{
 	background-color: rgb( 255, 200, 200 );
+}
+
+.gifsterCopyFalse{
+	margin-top: 210px; 
+	margin-left: 265px; 
+}
+
+.gifsterCopyFalse:hover{
+	background-color: rgb( 255, 200, 200 );
+}
+
+.gifsterCopyTrue{
+	margin-top: 210px; 
+	margin-left: 105px;
+}
+
+.gifsterCopyTrue:hover{
+	background-color: rgb( 200, 255, 200 );
 }

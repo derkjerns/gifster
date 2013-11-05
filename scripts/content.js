@@ -141,6 +141,32 @@ function hideConfirmation()
 	}
 }
 
+/*
+* showLinkCopy shows the link copy window.
+*/
+function showLinkCopy()
+{
+	//If the confimation window is currently hidden.
+	if( $( "#gifsterCopy" ).css( "display" ) != "block" )
+	{
+		//Display the confirmation window
+		$( "#gifsterCopy" ).css( "display", "block" );
+	}
+}
+
+/*
+* hideLinkCopy hides the link copy window.
+*/
+function hideLinkCopy()
+{
+	//If the confirmation window is currently being displayed.
+	if( $( "#gifsterCopy" ).css( "display" ) != "none" )
+	{
+		//Hide the confirmation window
+		$( "#gifsterCopy" ).css( "display", "none" );
+	}
+}
+
 
 /**************************
 
@@ -171,7 +197,12 @@ function createLibrary()
 	var confirmPrompt = document.createElement( "gifsterText" );
 	var confirmTrueText = document.createElement( "gifsterText" );
 	var confirmFalseText = document.createElement( "gifsterText" );
-
+	//Create the link copy window elements
+	var copyWindow = document.createElement( "gifsterDiv" );
+	var copyPrompt = document.createElement( "gifsterText" );
+	var copyLink = document.createElement( "gifsterLink" );
+	var copyFalseText = document.createElement( "gifsterText" );
+	var copyTrueText = document.createElement( "gifsterText" );
 
 	//Append all elements
 	document.body.appendChild( container );
@@ -181,6 +212,7 @@ function createLibrary()
 	div.appendChild( donateForm );
 	div.appendChild( closeButton );
 	div.appendChild( confirmWindow );
+	div.appendChild( copyWindow );
 	anchor.appendChild( logo );
 	list.appendChild( listSpacer );
 	donateForm.appendChild( commandInput );
@@ -189,6 +221,10 @@ function createLibrary()
 	confirmWindow.appendChild( confirmPrompt );
 	confirmWindow.appendChild( confirmTrueText );
 	confirmWindow.appendChild( confirmFalseText );
+	copyWindow.appendChild( copyPrompt );
+	copyWindow.appendChild( copyLink );
+	copyWindow.appendChild( copyFalseText );
+	copyWindow.appendChild( copyTrueText );
 
 	//Set attributes for the donation form
 	donateForm.action = "https://www.paypal.com/cgi-bin/webscr";
@@ -225,7 +261,6 @@ function createLibrary()
 	listSpacer.id = "gifsterListSpacer";
 
 	//Set attributes for close button
-	closeButton.className = "gifsterButton";
 	closeButton.id = "gifsterCloseButton";
 	closeButton.src = chrome.extension.getURL("images/close_button.png");
 	closeButton.onclick = function()
@@ -236,11 +271,12 @@ function createLibrary()
 
 	//Set attributes for confirmation container
 	confirmWindow.id = "gifsterConfirm";
+	confirmWindow.className = "gifsterPrompt";
 
 	//Set attributes for confirmation text and buttons
-	confirmPrompt.className = "gifsterConfirmText gifsterConfirmPrompt";
+	confirmPrompt.className = "gifsterText gifsterPromptText";
 	confirmPrompt.innerHTML = "Remove this image from your library?";
-	confirmTrueText.className = "gifsterConfirmText gifsterConfirmButton gifsterConfirmTrue";
+	confirmTrueText.className = "gifsterText gifsterPromptButton gifsterConfirmTrue";
 	confirmTrueText.innerHTML = "Ok";
 	confirmTrueText.onclick = function()
 	{ 
@@ -248,12 +284,61 @@ function createLibrary()
 		//the attribute "imageUrl" is set in the onclick handler of the trash button (see addBookmark function)
 		confirmRemoveBookmark( true, this.getAttribute( "imageUrl" ) ); 
 	};
-	confirmFalseText.className = "gifsterConfirmText gifsterConfirmButton gifsterConfirmFalse";
+	confirmFalseText.className = "gifsterText gifsterPromptButton gifsterConfirmFalse";
 	confirmFalseText.innerHTML = "Cancel";
 	confirmFalseText.onclick = function()
 	{ 
 		//confirm that the user did indeed want to remove the image
 		confirmRemoveBookmark( false ); 
+	};
+
+	//Set attributes for link copying window
+	copyWindow.id = "gifsterCopy";
+	copyWindow.className = "gifsterPrompt";
+	copyPrompt.id = "gifsterCopyPrompt";
+	copyPrompt.className = "gifsterText gifsterPromptText";
+	copyPrompt.innerHTML = "Copy link here:"
+	copyLink.id = "gifsterCopyLink";
+	copyLink.className = "gifsterText gifsterPromptLink gifsterPromptText";
+	//tabindex allows the link to be focused so the user can copy it.
+	copyLink.setAttribute( "tabindex", "-1" );
+	$( copyLink ).on( "copy", function()
+	{
+		//use an animation when the user copies the link
+		$( "#gifsterCopyLink" ).animate(
+		{
+		   opacity: 0,
+		   top: '-=20',
+		}, 200);
+
+		$( "#gifsterCopyPrompt" ).html( "Copied! Press enter, or click done to finish." );
+	});
+	$( copyLink ).keyup( function( e )
+	{
+		//If the user pressed the enter key
+	    if( e.which == 13 )
+	    {
+	    	//The user it done copying: Hide the UI and focus the activeElement
+	        hideLinkCopy();
+	        hideLibrary();
+	        focusActiveField();
+	    }
+	});
+	copyFalseText.className = "gifsterText gifsterPromptButton gifsterCopyFalse";
+	copyFalseText.innerHTML = "Cancel";
+	copyFalseText.onclick = function()
+	{ 
+		//The user cancelled copying this image link
+		hideLinkCopy();
+	};
+	copyTrueText.className = "gifsterText gifsterPromptButton gifsterCopyTrue";
+	copyTrueText.innerHTML = "Done";
+	copyTrueText.onclick = function()
+	{ 
+		//The user it done copying: Hide the UI and focus the activeElement
+		hideLinkCopy();
+        hideLibrary();
+        focusActiveField();
 	};
 }
 
@@ -349,11 +434,9 @@ function addBookmark( newImage )
 
 	        $(insertButton).on( "click", function()
     		{
-				//We want to close the window after an image has been chosen.
-				hideLibrary();
-				//Get the original source image
-				//We also want the image url to be inserted.
-				insertImageURL( this.parentNode.getAttribute( "gifsterImageURL" ) );
+    			showLinkCopy();
+    			//display the copy link window so that the user can copy the image url to their clipboard
+				copyLink( this.parentNode.getAttribute( "gifsterImageURL" ) );
     		});
 
     		$(trashButton).on( "click", function()
@@ -411,31 +494,48 @@ function confirmRemoveBookmark( confirm, url )
 	hideConfirmation();
 }
 
-/**************************
-
-  SOURCE-PAGE INTERACTION
-
-***************************/
-
 /*
-* insertImageURL inserts the URL of an image into the textfield that the user
-* selected in the source page.
+* copyLink sets up an element to hold the link that the user will copy.
 */
-function insertImageURL( url )
+function copyLink( url )
 {
+	//The element to hold the image url
+	var link = document.getElementById( "gifsterCopyLink" );
+	link.innerHTML = url;
 
+	//Check if an animation has been performed already on the element
+	if( $( link ).css( "opacity" ) == 0 )
+	{
+		//if so, we'll need to reverse it
+		$( link ).animate(
+		{
+			opacity: 100,
+		   	top: '+=20',
+		}, 0);
+		$( "#gifsterCopyPrompt" ).html( "Copy link here:" );
+	}
+
+	//Select the link so the user only need to use ctrl/cmd + C to copy
+	if ( document.selection )
+	{
+        var range = document.body.createTextRange();
+        range.moveToElementText( link );
+        range.select();
+    }
+    else if ( window.getSelection() )
+    {
+        var range = document.createRange();
+        range.selectNode( link );
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange( range );
+    }
+
+    //focus on the link so that key events are detected
+    link.focus();
+}
+
+function focusActiveField()
+{
 	//activeField is a global variable that is set in the showLibrary function
-
-	if( activeField.nodeName.toLowerCase() == "input" )
-	{
-		//If the activeField is an INPUT html element
-		//append the image url to the "value" attribute
-		activeField.value = activeField.value + url;
-	}
-	else
-	{
-		//if the node is anything other than an INPUT html element
-		//append the image url to the innerHTML attributes
-		activeField.innerHTML = activeField.innerHTML + url;
-	}
+	activeField.focus();
 }
