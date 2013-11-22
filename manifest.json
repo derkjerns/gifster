@@ -1,6 +1,6 @@
 {
 	"name":"gifster",
-	"version":"0.9",
+	"version":"0.9.2",
 	"manifest_version":2,
 	"description":"gifster chrome extension",
 	"background":{
@@ -24,6 +24,7 @@
 		"http://*/*",
 		"https://*/*"
 		],
+	"content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
 	"icons":{
 		"16":"images/icon_16.png",
 		"128":"images/icon_128.png"

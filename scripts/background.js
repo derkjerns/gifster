@@ -31,6 +31,25 @@ chrome.contextMenus.onClicked.addListener( function( info, tab )
 		contextClickHandler( info, tab );
 	});
 
+/**************************
+
+	  GOOGLE ANALYTICS
+
+***************************/
+
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'MY_ACCOUNT_ID']);
+
+(function() {
+  var ga = document.createElement('script');
+  ga.type = 'text/javascript';
+  ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(ga, s);
+})();
+
 
 /**************************
 
@@ -153,6 +172,10 @@ function addBookmark( url, tab )
 */
 function insertImage( tab )
 {
+
+	//Analytics tracking to see how often people are using the extension
+	_gaq.push(['_trackPageview']);
+	_gaq.push(['_trackEvent', 'library view', 'insert image']);
 
 	var donate = false;
 	var reminderInterval = 10;

@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 		{
 			showLibrary( request.library );
 
-			//donate will be true after every 20 'insert' actions.
+			//donate will be true after every 10 'insert' actions.
 			if ( request.donate === true )
 			{
 				//display the donate button
@@ -49,7 +49,6 @@ chrome.runtime.onMessage.addListener( function( request, sender, sendResponse )
 $.fn.exists = function () {
     return this.length !== 0;
 }
-
 
 /**************************
 
