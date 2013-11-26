@@ -7,6 +7,8 @@
 // Context menu built at install time. Also, check for localStorage capabilities.
 chrome.runtime.onInstalled.addListener( function() {
 
+	alert( "Please restart your browser to start using gifster!");
+
 	if ( !Modernizr.localstorage ) 
 	{
 		alert( "Please upgrade your browser to use giftser!\nGet Chrome here:\n\nhttps://www.google.com/intl/en/chrome/browser/" );
@@ -38,7 +40,7 @@ chrome.contextMenus.onClicked.addListener( function( info, tab )
 ***************************/
 
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'MY_ACCOUNT_ID']);
+_gaq.push(['_setAccount', 'UA-45765110-1']);
 
 (function() {
   var ga = document.createElement('script');
