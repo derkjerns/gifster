@@ -299,7 +299,7 @@ function createLibrary()
 	copyPrompt.innerHTML = "Copy link here:"
 	copyLink.id = "gifsterCopyLink";
 	copyLink.className = "gifsterText gifsterPromptLink gifsterPromptText";
-	//tabindex allows the link to be focused so the user can copy it.
+	//tabindex allows the link to be focused so the user can copy it, and hit enter to finish
 	copyLink.setAttribute( "tabindex", "-1" );
 	$( copyLink ).on( "copy", function()
 	{

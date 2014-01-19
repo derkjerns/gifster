@@ -4,15 +4,27 @@
 
 ***************************/
 
-// Context menu built at install time. Also, check for localStorage capabilities.
-chrome.runtime.onInstalled.addListener( function() {
+// Context menu built at install/update time.
+//Check for localStorage capabilities.
+//Re-run content scripts to update any open tabs.
+chrome.runtime.onInstalled.addListener( function(details) {
+
+	chrome.tabs.query({}, function(tabs) {
+		for (var i=0; i<tabs.length; i++) {
+			chrome.tabs.executeScript(tabs[i].id, {file: 'scripts/jquery-1.10.2.min.js'});
+			chrome.tabs.executeScript(tabs[i].id, {file: 'scripts/jquery.lazy.min.js'});
+			chrome.tabs.executeScript(tabs[i].id, {file: 'scripts/content.js'});
+		}
+	});
 
 	if ( !Modernizr.localstorage ) 
 	{
 		alert( "Please upgrade your browser to use giftser!\nGet Chrome here:\n\nhttps://www.google.com/intl/en/chrome/browser/" );
 	}
-	chrome.contextMenus.create( { "title": "Bookmark image", "contexts":[ "image" ], "id": "bookmark" } );
+
+    chrome.contextMenus.create( { "title": "Bookmark image", "contexts":[ "image" ], "id": "bookmark" } );
 	chrome.contextMenus.create( { "title": "Insert image", "contexts":[ "editable" ], "id": "insert" } );
+
 });
 
 //Listener required to receive messages from content.js
