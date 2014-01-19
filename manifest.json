@@ -1,6 +1,6 @@
 {
 	"name":"gifster",
-	"version":"0.9.3",
+	"version":"0.9.4",
 	"manifest_version":2,
 	"description":"gifster chrome extension",
 	"background":{
