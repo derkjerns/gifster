@@ -61,7 +61,6 @@ $.fn.exists = function () {
 //by clicking on it. Maybe there is a nicer way to do this ...
 var activeField;
 
-
 /**************************
 
 		UI VISIBILITY
@@ -394,8 +393,6 @@ function addBookmark( newImage )
 	image.setAttribute( "data-src", newImage );
 	image.src = chrome.extension.getURL( "images/loading.gif" );
 	image.setAttribute( "alt", "Gifster image" );
-	image.width = 220;
-	image.height = 220;
 	//This attr will be used in the event of an error so that the
 	//image can be removed from the library
 	image.setAttribute( "gifsterImageURL", newImage );
@@ -493,6 +490,12 @@ function confirmRemoveBookmark( confirm, url )
 	hideConfirmation();
 }
 
+/**************************
+
+		LINK PASTING
+
+***************************/
+
 /*
 * copyLink sets up an element to hold the link that the user will copy.
 */
@@ -500,7 +503,7 @@ function copyLink( url )
 {
 	//The element to hold the image url
 	var link = document.getElementById( "gifsterCopyLink" );
-	link.innerHTML = url;
+	link.innerHTML = "[«g»](" + url + ")";
 
 	//Check if an animation has been performed already on the element
 	if( $( link ).css( "opacity" ) == 0 )

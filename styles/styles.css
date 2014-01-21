@@ -22,6 +22,11 @@ body{
 	border:none;
 } 
 
+#gifsterContainer img.lazy{
+	height: 220px; 
+	width: 220px; 
+} 
+
 #gifsterWindow{ 
 	position: fixed; 
 	top: 0px; 
